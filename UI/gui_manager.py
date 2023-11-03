@@ -1,0 +1,17 @@
+import tkinter as tk
+from .login_ui import LoginUI
+
+class GUIManager:
+  def __init__(self):
+    self.root = tk.Tk()
+    self.login_ui = LoginUI(self.root)
+
+  def run(self):
+    self.root.mainloop()
+
+  # Mostrar la pantalla de Login
+  def show_login(self):
+    self.login_ui.show()
+
+  def hide_login(self):
+    self.login_ui.hide()
