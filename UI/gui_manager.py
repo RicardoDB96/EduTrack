@@ -1,10 +1,12 @@
 import tkinter as tk
 from .login_ui import LoginUI
+from .main_ui import MainUI
 
 class GUIManager:
   def __init__(self):
     self.root = tk.Tk()
-    self.login_ui = LoginUI(self.root)
+    #self.login_ui = LoginUI(self.root)
+    self.main_ui = MainUI(self.root)
 
   def run(self):
     self.root.mainloop()
