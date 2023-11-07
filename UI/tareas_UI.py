@@ -25,12 +25,10 @@ class TareasUI:
     self.scrollbar = tk.Scrollbar(self.root, orient=tk.VERTICAL, command=self.canvas.yview)
     self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-    # Datos de prueba, se remplazarán con datos reales
-    self.data = [("Tarea 1", "Matemáticas", "2023-11-15"), ("Tarea 2", "Ciencias", "2023-11-20"),
-                 ("Tarea 3", "Historia", "2023-11-25"), ("Tarea 4", "Ciencias", "2023-11-20"),
-                 ("Tarea 5", "Matemáticas", "2023-11-15"), ("Tarea 6", "Ciencias", "2023-11-20"),
-                 ("Tarea 7", "Matemáticas", "2023-11-15"), ("Tarea 8", "Ciencias", "2023-11-20"),
-                 ("Tarea 9", "Matemáticas", "2023-11-15"), ("Tarea 10", "Ciencias", "2023-11-20")]
+    # Recuperamos los datos de tareas
+    self.data = db.db_controller.getAllTaskWithSubjectColor()
+
+    print(self.data)
 
     # Configuración del scroll de la lista
     self.update_scrollbar()
@@ -43,17 +41,17 @@ class TareasUI:
       y_position = 0
       x_start = 0
       x_end = 825
-      for i, (task, subject, date) in enumerate(self.data):
+      for i, (id, task, subject, color, date, type) in enumerate(self.data):
         rectangle = self.canvas.create_rectangle(x_start, y_position, x_end, y_position + 55, outline="",
                                                    tags=f"rectangle{i}")
         self.rectangles.append(rectangle)
         self.canvas.create_line(x_start, y_position + 55, x_end, y_position + 55,
                                 fill="light grey")  # Agregar un divisor al final del rectángulo
         self.canvas.create_text(10, y_position + 15, anchor='w', text=task, font=('FontAwesome', 15))
-        self.canvas.create_oval(10, y_position + 30, 30, y_position + 50, fill="red", outline="")  # Dibujar círculo de color dentro del rectángulo
+        self.canvas.create_oval(10, y_position + 30, 30, y_position + 50, fill=color, outline="")  # Dibujar círculo de color dentro del rectángulo
         self.canvas.create_text(40, y_position + 40, anchor='w', text=subject, font=('FontAwesome', 15))
         self.canvas.create_text(x_end - 110, y_position + 15, anchor='w', text=date, font=('FontAwesome', 15))
-        self.canvas.create_text(x_end - 165, y_position + 40, anchor='w', text="Trabajo en equipo", font=('FontAwesome', 15))
+        self.canvas.create_text(x_end - 165, y_position + 40, anchor='w', text=type, font=('FontAwesome', 15))
 
         # Eventos relacionados al comportamiento del rectangulo, como lo puede ser el pasar por encima o hacer click en el
         self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event, i=i: self.on_item_click(event, i))
@@ -84,7 +82,7 @@ class TareasUI:
   # Función para actualizar la lista de tareas
   def update_tareas_list(self):
     # Actualizar la lista de tareas
-    self.data = []#db.db_controller.getAllTask()
+    self.data = db.db_controller.getAllTaskWithSubjectColor()
     self.canvas.delete("all")  # Limpiar el Canvas
     self.draw_rectangles()
 

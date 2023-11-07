@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkcalendar import DateEntry
 from DB import controller as db
+import sqlite3 as sql
 
 class AddTareaDialog:
 
@@ -30,7 +31,7 @@ class AddTareaDialog:
     self.tarea_entry.pack(side="right", fill="x", expand=True, padx=8)
 
     # Configuración de las opciones de la materia
-    options = ["Opción 1", "Opción 2", "Opción 3", "Opción 4"]
+    options = db.db_controller.getAllSubjectNames()
     self.subject = tk.StringVar(self.top)
     self.subject.set("")
 
@@ -75,24 +76,27 @@ class AddTareaDialog:
 
   # Función para añadir la materia en la base de datos y actulizarla
   def add_tarea(self):
+    # Obtenemos todos los valores a ingresar a la DB
     tarea = self.tarea_entry.get()
-    materia = self.subject.get()
-    date = self.cal.get_date().strftime("%d-%m-%Y")
+    date = self.cal.get_date().strftime("%Y-%m-%d")
     mtype = self.m_type.get()
 
     # Checamos errores
-    case = self.check_errors(tarea, materia, date, mtype)
+    case = self.check_errors(tarea, self.subject.get(), date, mtype)
 
-    if case:
-      print(f"{tarea}\n{materia}\n{date}\n{mtype}")
+    subject = self.subject.get().replace("(", "").replace(",)", "").replace("'", "")
 
     # Si no tenemos errores, procedemos a ingresar los datos a la base de datos
-    #if case:
-    #  print(f"{tarea}\n{materia}\n{date}\n{mtype}")
-    #  db.db_controller.insertTask(tarea, materia, date, mtype)
-    #  self.top.destroy()
-    #  self.tareas_ui.update_materias_list()
-    #  self.tareas_ui.update_scrollbar()
+    db.db_controller.getSubjectID(subject)
+    if case:
+      try:
+        materia = db.db_controller.getSubjectID(subject)[0] # Buscamos el id de la materia
+        db.db_controller.insertTask(tarea, materia, date, mtype)
+        self.top.destroy()
+        self.tareas_ui.update_tareas_list()
+        self.tareas_ui.update_scrollbar()
+      except sql.OperationalError as e:
+        messagebox.showerror('Error al añadir', e)
     
   # Funcion para checar los posibles errores al crear una materia
   def check_errors(self, tarea, materia, date, type):

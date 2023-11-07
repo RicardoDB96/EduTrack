@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import colorchooser
 from tkinter import messagebox
 from DB import controller as db
+import sqlite3 as sql
 
 class AddMateriaDialog:
 
@@ -59,10 +60,13 @@ class AddMateriaDialog:
 
         # Si no tenemos errores, procedemos a ingresar los datos a la base de datos
         if case:
-            db.db_controller.insertSubject(nombre, color)
-            self.top.destroy()
-            self.materias_ui.update_materias_list()
-            self.materias_ui.update_scrollbar()
+            try:
+                db.db_controller.insertSubject(nombre, color)
+                self.top.destroy()
+                self.materias_ui.update_materias_list()
+                self.materias_ui.update_scrollbar()
+            except sql.IntegrityError as e:
+                messagebox.showerror('Error al añadir', 'No se puede añadir una materia con el mismo nombre')
 
     # Funcion para checar los posibles errores al crear una materia
     def check_errors(self, color_code, invalid_color):
