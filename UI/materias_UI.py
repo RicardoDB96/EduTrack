@@ -8,7 +8,7 @@ class MateriasUI:
     self.root = root
     tk.Label(root, text="Materias", font=('FontAwesome', 18, "bold")).pack(side="top")
 
-    # Abrir la ventana para abrir tareas
+    # Abrir la ventana para crear materias
     def add_subject():
       AddMateriaDialog(root, self)
 
@@ -89,5 +89,4 @@ class MateriasUI:
   def on_leave(self,rect):
     # Restaurar estilo al salir el ratón
     index = self.rectangles.index(rect)
-    color = self.data[index][1]
     self.canvas.itemconfig(rect, fill="")
