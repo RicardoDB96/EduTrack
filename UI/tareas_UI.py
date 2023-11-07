@@ -1,5 +1,5 @@
 import tkinter as tk
-#from .add_tarea import AddTareaDialog
+from .add_tarea import AddTareaDialog
 from DB import controller as db
 
 class TareasUI:
@@ -10,8 +10,7 @@ class TareasUI:
 
     # Abrir la ventana para crear tareas
     def add_task():
-      a = 1
-      #AddTareaDialog(root, self)
+      AddTareaDialog(root, self)
 
     # Botón que agrega tareas
     add_task_button = tk.Button(root, text="Añadir tarea", command=add_task, bg="#496fe8", activebackground="#2b3fca",
@@ -81,6 +80,13 @@ class TareasUI:
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     else:
         self.scrollbar.pack_forget()
+
+  # Función para actualizar la lista de tareas
+  def update_tareas_list(self):
+    # Actualizar la lista de tareas
+    self.data = []#db.db_controller.getAllTask()
+    self.canvas.delete("all")  # Limpiar el Canvas
+    self.draw_rectangles()
 
   # Función para detectar qué tarea se selecciono
   def on_item_click(self, event, i):
