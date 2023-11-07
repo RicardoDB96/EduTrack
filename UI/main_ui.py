@@ -1,4 +1,5 @@
 import tkinter as tk
+from .tareas_UI import TareasUI
 from .materias_UI import MateriasUI
 
 bg_color = '#dee6fb'
@@ -60,7 +61,7 @@ class MainUI:
   # Nuevo
   def abrir_tareas(self):   
     self.limpiar_panel(self.main)
-    #TareasUI(self.main)
+    TareasUI(self.main)
         
   def abrir_materias(self):   
     self.limpiar_panel(self.main)
