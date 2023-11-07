@@ -1,4 +1,5 @@
 import tkinter as tk
+from .materias_UI import MateriasUI
 
 bg_color = '#dee6fb'
 hover_color = '#3552dc'
@@ -63,7 +64,7 @@ class MainUI:
         
   def abrir_materias(self):   
     self.limpiar_panel(self.main)
-    #MateriasUI(self.main)
+    MateriasUI(self.main)
 
   def limpiar_panel(self,panel):
     # Función para limpiar el contenido del panel
