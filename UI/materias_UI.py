@@ -1,13 +1,18 @@
 import tkinter as tk
+from .add_materia import AddMateriaDialog
 
 class MateriasUI:
-
+  
   def __init__(self, root):
     self.root = root
     tk.Label(root, text="Materias", font=('FontAwesome', 18, "bold")).pack(side="top")
 
+    def add_subject():
+      dialog = AddMateriaDialog(root)
+
     # Botón que agrega materias
-    add_subject_button = tk.Button(root, text="Añadir materia", bg="#496fe8", activebackground="#2b3fca", activeforeground="white", fg="white", font=('FontAwesome', 14, "bold"))
+    add_subject_button = tk.Button(root, text="Añadir materia", command=add_subject, bg="#496fe8", activebackground="#2b3fca", 
+                                   activeforeground="white", fg="white", font=('FontAwesome', 14, "bold"))
     add_subject_button.pack(pady=16, padx=16,side="bottom", anchor="ne")
 
     # Creación del canvas que contendra la lista
