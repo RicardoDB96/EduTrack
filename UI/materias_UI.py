@@ -42,20 +42,20 @@ class MateriasUI:
     y_position = 0
     x_start = 0
     x_end = 825
-    for (id, subject, color) in self.data:
-      rectangle = self.canvas.create_rectangle(x_start, y_position, x_end, y_position + 30, outline="", tags=f"rectangle{id}")
+    for i, (id, subject, color) in enumerate(self.data):
+      rectangle = self.canvas.create_rectangle(x_start, y_position, x_end, y_position + 30, outline="", tags=f"rectangle{i}")
       self.rectangles.append(rectangle)
       self.canvas.create_line(x_start, y_position + 30, x_end, y_position + 30, fill="light grey")  # Agregar un divisor al final del rectángulo
       circle = self.canvas.create_oval(10, y_position + 5, 30, y_position + 25, fill=color, outline="")  # Dibujar círculo de color dentro del rectángulo
       self.canvas.create_text(40, y_position + 15, anchor='w', text=subject, font=('FontAwesome', 15))  # Agregar texto con el nombre de la materia al lado del círculo
-      self.canvas.tag_bind(f"rectangle{id}", '<ButtonPress-1>', lambda event, i=id: self.on_item_click(event, i))
+      self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event, i=i: self.on_item_click(event, i))
       self.canvas.tag_bind(rectangle, "<Enter>", lambda event, rect=rectangle: self.on_enter(rect))
       self.canvas.tag_bind(rectangle, "<Leave>", lambda event, rect=rectangle: self.on_leave(rect))
       y_position += 30
 
-  # 
+  # Funcion para detectar que materia seleccionaste
   def on_item_click(self, event, i):
-      print(f"Seleccionaste: {self.data[i][0]}")
+    print(f"Seleccionaste: {self.data[i][0]}")
 
   def on_enter(self, rect):
     # Cambiar estilo al pasar el ratón por encima
