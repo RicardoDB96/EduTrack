@@ -11,6 +11,7 @@ class AddMateriaDialog:
         self.top = tk.Toplevel(self.root)
         self.top.grab_set()
 
+        # Configuracion de la ventana
         self.top.title("Agregar Materia")
         self.top.geometry("300x180")
         self.top.resizable(0, 0)
@@ -20,6 +21,7 @@ class AddMateriaDialog:
         # Nombre del sistema
         tk.Label(self.top, text="Agregar materia", font=("FontAwesome", 16, "bold")).pack(side="top", fill="x", padx=8, pady=12)
 
+        # Configuración de la fila con los elementos del nombre
         nombre_frame = tk.Frame(self.top)
         nombre_frame.pack(fill="x")
         self.nombre_label = tk.Label(nombre_frame, text="Materia:", font=n_font)
@@ -27,6 +29,7 @@ class AddMateriaDialog:
         self.nombre_entry = tk.Entry(nombre_frame, font=n_font)
         self.nombre_entry.pack(side="right", fill="x", expand=True, padx=8)
 
+         # Configuración de la fila con los elementos del nombre
         color_frame = tk.Frame(self.top)
         color_frame.pack(fill="x", pady=4)
         self.color_label = tk.Label(color_frame, text="Color:    ", font=n_font)
@@ -34,27 +37,34 @@ class AddMateriaDialog:
         self.color_button = tk.Button(color_frame, text="Elegir Color", command=self.choose_color, font=n_font)
         self.color_button.pack(side="right", fill="x", expand=True, padx=8)
 
+        # Creación del botón para crear la materia
         self.add_button = tk.Button(self.top, text="Agregar", command=self.add_materia, bg="#496fe8", activebackground="#2b3fca", 
                                    activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
         self.add_button.pack(fill="x", padx=16, pady=8)
 
+    # Funciión para elegir el color de la materia
     def choose_color(self):
         color_code = colorchooser.askcolor(title="Elegir color")[1]
         self.color_button.configure(bg=color_code)
-        self.color_button.configure(fg=get_font_color(color_code))
+        self.color_button.configure(fg=get_font_color(color_code))# Actualizamos el color de la letra dependiendo el color del background
         self.top.deiconify()
 
+    # Función para añadir la materia en la base de datos y actulizarla
     def add_materia(self):
         nombre = self.nombre_entry.get()
         color = self.color_button.cget("bg")
 
+        # Checamos errores
         case = self.check_errors(color, self.top.cget('bg'))
 
+        # Si no tenemos errores, procedemos a ingresar los datos a la base de datos
         if case:
             db.db_controller.insertSubject(nombre, color)
             self.top.destroy()
             self.materias_ui.update_materias_list()
+            self.materias_ui.update_scrollbar()
 
+    # Funcion para checar los posibles errores al crear una materia
     def check_errors(self, color_code, invalid_color):
         if not self.nombre_entry.get() and color_code == invalid_color:
             messagebox.showerror('Error al añadir', 'Ingrese un texto y seleccione un color')

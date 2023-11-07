@@ -7,6 +7,7 @@ class db_controller:
   #  conn.commit()
   #  conn.close()
 
+  # Ingresar una materia a la base de datos
   def insertSubject(materia, color):
     createSubjectTable()
     conn = sql.connect("edutrack.db")
@@ -16,6 +17,7 @@ class db_controller:
     conn.commit()
     conn.close()
   
+  # Obtener los todos los datos de materias de la base de datos
   def getAllSubject():
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
@@ -26,6 +28,7 @@ class db_controller:
     conn.close()
     return datos
   
+# Creación de la tabla
 def createSubjectTable():
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
