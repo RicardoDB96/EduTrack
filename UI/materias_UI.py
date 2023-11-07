@@ -1,5 +1,6 @@
 import tkinter as tk
 from .add_materia import AddMateriaDialog
+from DB import controller as db
 
 class MateriasUI:
   
@@ -8,7 +9,7 @@ class MateriasUI:
     tk.Label(root, text="Materias", font=('FontAwesome', 18, "bold")).pack(side="top")
 
     def add_subject():
-      dialog = AddMateriaDialog(root)
+      AddMateriaDialog(root)
 
     # Botón que agrega materias
     add_subject_button = tk.Button(root, text="Añadir materia", command=add_subject, bg="#496fe8", activebackground="#2b3fca", 
@@ -29,7 +30,9 @@ class MateriasUI:
     self.canvas.bind("<MouseWheel>",lambda e: self.canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
     
     # Datos de prueba, se remplazaran
-    self.data = [("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "blue"),("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "blue"),("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "blue"),("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "blue"), ("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "blue"),("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "blue"),("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "blue"),("Matemáticas", "red"), ("Ciencias", "green"), ("Historia", "black"),]
+    self.data = db.db_controller.getAllSubject()
+
+    print(self.data)
 
     self.draw_rectangles()
     
@@ -39,13 +42,13 @@ class MateriasUI:
     y_position = 0
     x_start = 0
     x_end = 825
-    for i, (subject, color) in enumerate(self.data):
-      rectangle = self.canvas.create_rectangle(x_start, y_position, x_end, y_position + 30, outline="", tags=f"rectangle{i}")
+    for (id, subject, color) in self.data:
+      rectangle = self.canvas.create_rectangle(x_start, y_position, x_end, y_position + 30, outline="", tags=f"rectangle{id}")
       self.rectangles.append(rectangle)
       self.canvas.create_line(x_start, y_position + 30, x_end, y_position + 30, fill="light grey")  # Agregar un divisor al final del rectángulo
       circle = self.canvas.create_oval(10, y_position + 5, 30, y_position + 25, fill=color, outline="")  # Dibujar círculo de color dentro del rectángulo
       self.canvas.create_text(40, y_position + 15, anchor='w', text=subject, font=('FontAwesome', 15))  # Agregar texto con el nombre de la materia al lado del círculo
-      self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event, i=i: self.on_item_click(event, i))
+      self.canvas.tag_bind(f"rectangle{id}", '<ButtonPress-1>', lambda event, i=id: self.on_item_click(event, i))
       self.canvas.tag_bind(rectangle, "<Enter>", lambda event, rect=rectangle: self.on_enter(rect))
       self.canvas.tag_bind(rectangle, "<Leave>", lambda event, rect=rectangle: self.on_leave(rect))
       y_position += 30

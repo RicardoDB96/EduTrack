@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import colorchooser
 from tkinter import messagebox
+from DB import controller as db
 
 class AddMateriaDialog:
 
@@ -49,8 +50,8 @@ class AddMateriaDialog:
         case = self.check_errors(color, self.top.cget('bg'))
 
         if case:
-            print(f"{nombre}    {color}")
-        # Aquí puedes agregar la lógica para insertar los datos en la base de datos
+            db.db_controller.insertSubject(nombre, color)
+            self.top.destroy()
 
     def check_errors(self, color_code, invalid_color):
         if not self.nombre_entry.get() and color_code == invalid_color:
