@@ -5,8 +5,9 @@ from DB import controller as db
 
 class AddMateriaDialog:
 
-    def __init__(self, root):
+    def __init__(self, root, materias_ui):
         self.root = root
+        self.materias_ui = materias_ui
         self.top = tk.Toplevel(self.root)
         self.top.grab_set()
 
@@ -52,6 +53,7 @@ class AddMateriaDialog:
         if case:
             db.db_controller.insertSubject(nombre, color)
             self.top.destroy()
+            self.materias_ui.update_materias_list()
 
     def check_errors(self, color_code, invalid_color):
         if not self.nombre_entry.get() and color_code == invalid_color:

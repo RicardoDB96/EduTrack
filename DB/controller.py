@@ -19,7 +19,7 @@ class db_controller:
   def getAllSubject():
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
-    instruccion = f"SELECT * FROM subject"
+    instruccion = f"SELECT * FROM subject ORDER BY LOWER(materia)"
     cursor.execute(instruccion)
     datos = cursor.fetchall()
     conn.commit()

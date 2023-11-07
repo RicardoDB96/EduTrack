@@ -9,7 +9,7 @@ class MateriasUI:
     tk.Label(root, text="Materias", font=('FontAwesome', 18, "bold")).pack(side="top")
 
     def add_subject():
-      AddMateriaDialog(root)
+      AddMateriaDialog(root, self)
 
     # Botón que agrega materias
     add_subject_button = tk.Button(root, text="Añadir materia", command=add_subject, bg="#496fe8", activebackground="#2b3fca", 
@@ -32,11 +32,9 @@ class MateriasUI:
     # Datos de prueba, se remplazaran
     self.data = db.db_controller.getAllSubject()
 
-    print(self.data)
-
     self.draw_rectangles()
     
-  # Función para crear los espacios para cada materias¿
+  # Función para crear los espacios para cada materias
   def draw_rectangles(self):
     self.rectangles = []
     y_position = 0
@@ -52,6 +50,12 @@ class MateriasUI:
       self.canvas.tag_bind(rectangle, "<Enter>", lambda event, rect=rectangle: self.on_enter(rect))
       self.canvas.tag_bind(rectangle, "<Leave>", lambda event, rect=rectangle: self.on_leave(rect))
       y_position += 30
+    
+  def update_materias_list(self):
+    # Actualizar la lista de materias
+    self.data = db.db_controller.getAllSubject()
+    self.canvas.delete("all")  # Limpiar el Canvas
+    self.draw_rectangles()
 
   # Funcion para detectar que materia seleccionaste
   def on_item_click(self, event, i):
