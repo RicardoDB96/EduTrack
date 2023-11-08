@@ -53,7 +53,7 @@ class TareasUI:
         self.canvas.create_text(x_end - 165, y_position + 40, anchor='w', text=type, font=('FontAwesome', 15))
 
         # Eventos relacionados al comportamiento del rectangulo, como lo puede ser el pasar por encima o hacer click en el
-        self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event: self.on_item_click(id))
+        self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event, id=id: self.on_item_click(id))
         self.canvas.tag_bind(rectangle, "<Enter>", lambda event, rect=rectangle: self.on_enter(rect))
         self.canvas.tag_bind(rectangle, "<Leave>", lambda event, rect=rectangle: self.on_leave(rect))
 
@@ -62,7 +62,7 @@ class TareasUI:
   # Función para actualizar el comportamiento de la scrollbar en base a cuantos elementos tiene la base de datos
   def update_scrollbar(self):
     item_count = len(self.data)
-    if item_count > 10:# Si tiene mas de 18 elementos, mostramos la scrollbar con sus respectivos comportamientos
+    if item_count > 10:# Si tiene mas de 10 elementos, mostramos la scrollbar con sus respectivos comportamientos
         self.scrollbar_visible = True
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.canvas.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))

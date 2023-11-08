@@ -1,4 +1,5 @@
 import tkinter as tk
+from datetime import date
 from tkinter import messagebox
 from DB import controller as db
 
@@ -37,13 +38,19 @@ class TareasInfo:
     tk.Label(self.top, text="Fecha de entrega", font=("FontAwesome", 16, "bold")).pack(anchor="w", padx=8, pady=8)
     tk.Label(self.top, text=tarea[3], font=("FontAwesome", 14)).pack(anchor="w", padx=8)
     if tarea[5] != 0 and tarea[6] != None:
-      tk.Label(self.top, text=tarea[6], font=("FontAwesome", 14)).pack(anchor="w", padx=8)
+      tk.Label(self.top, text=f"Completado el {tarea[6]}", font=("FontAwesome", 14)).pack(anchor="w", padx=8)
 
     tk.Label(self.top, text="Tipo de tarea", font=("FontAwesome", 16, "bold")).pack(anchor="w", padx=8, pady=8)
     tk.Label(self.top, text=tarea[4], font=("FontAwesome", 14)).pack(anchor="w", padx=8)
 
+    # Logica para cambiar el texto
+    if tarea [5] != 0:
+      complete_text = "Sin completar"
+    else:
+      complete_text = "Completada"
+
     # Creación del botón para completar la tarea
-    self.complete_button = tk.Button(self.top, text="Completada", #command=self.completar_tarea, 
+    self.complete_button = tk.Button(self.top, text=complete_text, command=lambda: self.completar_tarea(self.task_id, tarea[5]), 
                                      bg="#496fe8", activebackground="#2b3fca", 
                                activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
     self.complete_button.pack(fill="x", padx=8, pady=8, side="bottom")
@@ -60,6 +67,15 @@ class TareasInfo:
                                activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
     self.delete_button.pack(fill="x", padx=8, pady=8, side="bottom")
 
+  # Función para marcar como completada/no completada a la tarea, y hacer los respectivos cambios en la misma
+  def completar_tarea(self, task_id, status):
+    today = date.today()
+    if status != 0:
+      today = None
+    db.db_controller.completeTask(not status, today, task_id)
+    self.top.destroy()
+
+  # Función para eliminar una tarea
   def eliminar_tarea(self, task_id):
     confirmacion = messagebox.askyesno("Confirmar eliminación", "¿Estás seguro de que quieres eliminar esta tarea?\nPerderas toda la información relacionada con la tarea")
     if confirmacion:

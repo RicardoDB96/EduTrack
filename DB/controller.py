@@ -94,6 +94,17 @@ class db_controller:
     conn.close()
     return datos
   
+  def completeTask(complete, completed, task_id):
+    conn = sql.connect("edutrack.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+    UPDATE task
+    SET complete = ?,
+        completed = ?
+    WHERE id = ?""", (complete, completed, task_id))
+    conn.commit()
+    conn.close()
+  
   def deleteTaskByID(id):
     conn = sql.connect('edutrack.db')
     cursor = conn.cursor()
@@ -124,10 +135,10 @@ def createTaskTable():
       id INTEGER PRIMARY KEY,
       tarea TEXT NOT NULL,
       subject_id INTEGER NOT NULL,
-      complete INTEGER DEFAULT 0,
-      completed TEXT DEFAULT NULL,
       fecha TEXT NOT NULL,
       type TEXT NOT NULL,
+      complete INTEGER DEFAULT 0,
+      completed TEXT DEFAULT NULL,
       description TEXT DEFAULT NULL,
       FOREIGN KEY(subject_id) REFERENCES subject(id)
     )"""
