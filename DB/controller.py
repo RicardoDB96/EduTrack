@@ -33,9 +33,24 @@ class db_controller:
     createTaskTable()
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
-    instruccion = f"INSERT INTO task (tarea, subject_id, fecha, type) VALUES (?, ?, ?, ?)"
+    instruccion = "INSERT INTO task (tarea, subject_id, fecha, type) VALUES (?, ?, ?, ?)"
     cursor.execute(instruccion, (tarea, materia_id, fecha, type))
     conn.commit()
+    conn.close()
+
+  # Ingresar una tarea a la base de datos
+  def updateTask(tarea, materia_id, fecha, type, task_id):
+    createTaskTable()
+    conn = sql.connect("edutrack.db")
+    cursor = conn.cursor()
+    instruccion = """UPDATE task 
+                    SET tarea = ?, 
+                        subject_id = ?, 
+                        fecha = ?, 
+                        type = ?
+                    WHERE id = ?"""
+    cursor.execute(instruccion, (tarea, materia_id, fecha, type, task_id))
+    conn.commit() 
     conn.close()
 
   # Obtener los todos los datos de la tarea, según su ID, de la base de datos con los datos de la materia
@@ -43,7 +58,7 @@ class db_controller:
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
     instruccion = f"""
-      SELECT task.tarea, subject.materia, subject.color, task.fecha, task.type, task.complete, task.completed
+      SELECT task.tarea, subject.materia, subject.color, task.fecha, task.type, task.complete, task.completed, task.id
       FROM task 
       JOIN subject 
       ON task.subject_id = subject.id

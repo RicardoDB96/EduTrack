@@ -2,6 +2,7 @@ import tkinter as tk
 from datetime import date
 from tkinter import messagebox
 from DB import controller as db
+from .add_tarea import AddTareaDialog
 
 class TareasInfo:
 
@@ -44,7 +45,7 @@ class TareasInfo:
     tk.Label(self.top, text=tarea[4], font=("FontAwesome", 14)).pack(anchor="w", padx=8)
 
     # Logica para cambiar el texto
-    if tarea [5] != 0:
+    if tarea[5] != 0:
       complete_text = "Sin completar"
     else:
       complete_text = "Completada"
@@ -56,7 +57,7 @@ class TareasInfo:
     self.complete_button.pack(fill="x", padx=8, pady=8, side="bottom")
 
     # Creación del botón para editar la tarea
-    self.update_button = tk.Button(self.top, text="Editar", #command=self.editar_tarea, 
+    self.update_button = tk.Button(self.top, text="Editar", command=lambda: self.editar_tarea(tarea), 
                                    bg="#9bb8f5", activebackground="#496fe8", 
                                activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
     self.update_button.pack(fill="x", padx=8, pady=8, side="bottom")
@@ -73,6 +74,13 @@ class TareasInfo:
     if status != 0:
       today = None
     db.db_controller.completeTask(not status, today, task_id)
+    self.top.destroy()
+
+  # Función para editar los datos de una tarea
+  def editar_tarea(self, tarea):
+    AddTareaDialog(self.top, self.tareas_ui, tarea, self.top)
+
+  def destroy_info(self):
     self.top.destroy()
 
   # Función para eliminar una tarea

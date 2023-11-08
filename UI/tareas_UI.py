@@ -11,7 +11,7 @@ class TareasUI:
 
     # Abrir la ventana para crear tareas
     def add_task():
-      AddTareaDialog(root, self)
+      AddTareaDialog(root, self, None, None)
 
     # Botón que agrega tareas
     add_task_button = tk.Button(root, text="Añadir tarea", command=add_task, bg="#496fe8", activebackground="#2b3fca",
