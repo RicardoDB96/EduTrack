@@ -1,5 +1,6 @@
 import tkinter as tk
 from .add_tarea import AddTareaDialog
+from .tareas_info_UI import TareasInfo
 from DB import controller as db
 
 class TareasUI:
@@ -28,8 +29,6 @@ class TareasUI:
     # Recuperamos los datos de tareas
     self.data = db.db_controller.getAllTaskWithSubjectColor()
 
-    print(self.data)
-
     # Configuración del scroll de la lista
     self.update_scrollbar()
 
@@ -54,7 +53,7 @@ class TareasUI:
         self.canvas.create_text(x_end - 165, y_position + 40, anchor='w', text=type, font=('FontAwesome', 15))
 
         # Eventos relacionados al comportamiento del rectangulo, como lo puede ser el pasar por encima o hacer click en el
-        self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event, i=i: self.on_item_click(event, i))
+        self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event: self.on_item_click(id))
         self.canvas.tag_bind(rectangle, "<Enter>", lambda event, rect=rectangle: self.on_enter(rect))
         self.canvas.tag_bind(rectangle, "<Leave>", lambda event, rect=rectangle: self.on_leave(rect))
 
@@ -87,8 +86,8 @@ class TareasUI:
     self.draw_rectangles()
 
   # Función para detectar qué tarea se selecciono
-  def on_item_click(self, event, i):
-    print(f"Seleccionaste: {self.data[i][0]}")
+  def on_item_click(self, id):
+    TareasInfo(self.root, self, id)
 
   def on_enter(self, rect):
     # Cambiar estilo al pasar el ratón por encima

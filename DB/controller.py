@@ -23,7 +23,10 @@ class db_controller:
     cursor = conn.cursor()
     instruccion = f"SELECT id FROM subject WHERE materia=?"
     cursor.execute(instruccion, (materia,))
-    return cursor.fetchone()
+    id = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    return id
   
   # Ingresar una tarea a la base de datos
   def insertTask(tarea, materia_id, fecha, type):
@@ -34,6 +37,23 @@ class db_controller:
     cursor.execute(instruccion, (tarea, materia_id, fecha, type))
     conn.commit()
     conn.close()
+
+  # Obtener los todos los datos de la tarea, según su ID, de la base de datos con los datos de la materia
+  def getTaskByID(id):
+    conn = sql.connect("edutrack.db")
+    cursor = conn.cursor()
+    instruccion = f"""
+      SELECT task.tarea, subject.materia, subject.color, task.fecha, task.type, task.complete, task.completed
+      FROM task 
+      JOIN subject 
+      ON task.subject_id = subject.id
+      WHERE task.id = {id}
+    """
+    cursor.execute(instruccion)
+    tarea = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    return tarea
   
   # Obtener los todos los datos de materias de la base de datos
   def getAllSubject():
@@ -97,8 +117,11 @@ def createTaskTable():
       id INTEGER PRIMARY KEY,
       tarea TEXT NOT NULL,
       subject_id INTEGER NOT NULL,
+      complete INTEGER DEFAULT 0,
+      completed TEXT DEFAULT NULL,
       fecha TEXT NOT NULL,
       type TEXT NOT NULL,
+      description TEXT DEFAULT NULL,
       FOREIGN KEY(subject_id) REFERENCES subject(id)
     )"""
   )
