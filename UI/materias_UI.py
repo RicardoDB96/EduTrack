@@ -11,7 +11,7 @@ class MateriasUI:
 
     # Abrir la ventana para crear materias
     def add_subject():
-      AddMateriaDialog(root, self)
+      AddMateriaDialog(root, self, None, None)
 
     # Botón que agrega materias
     add_subject_button = tk.Button(root, text="Añadir materia", command=add_subject, bg="#496fe8", activebackground="#2b3fca", 

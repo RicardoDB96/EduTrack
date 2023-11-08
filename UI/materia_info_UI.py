@@ -43,7 +43,7 @@ class MateriasInfo:
     tk.Label(self.top, text=complete_task_count, font=("FontAwesome", 14)).pack(anchor="w", padx=8)
 
     # Creación del botón para editar la tarea
-    self.update_button = tk.Button(self.top, text="Editar", command=lambda: self.editar_tarea(materia), 
+    self.update_button = tk.Button(self.top, text="Editar", command=lambda: self.editar_materia(materia), 
                                    bg="#9bb8f5", activebackground="#496fe8", 
                                activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
     self.update_button.pack(fill="x", padx=8, pady=8, side="bottom")

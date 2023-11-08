@@ -38,9 +38,8 @@ class db_controller:
     conn.commit()
     conn.close()
 
-  # Ingresar una tarea a la base de datos
+  # Actualizar una tarea a la base de datos
   def updateTask(tarea, materia_id, fecha, type, task_id):
-    createTaskTable()
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
     instruccion = """UPDATE task 
@@ -50,6 +49,18 @@ class db_controller:
                         type = ?
                     WHERE id = ?"""
     cursor.execute(instruccion, (tarea, materia_id, fecha, type, task_id))
+    conn.commit() 
+    conn.close()
+
+  # Actualizar una materia a la base de datos
+  def updateSubject(id, materia, color):
+    conn = sql.connect("edutrack.db")
+    cursor = conn.cursor()
+    instruccion = """UPDATE subject 
+                    SET materia = ?, 
+                        color = ?
+                    WHERE id = ?"""
+    cursor.execute(instruccion, (materia, color, id))
     conn.commit() 
     conn.close()
 
