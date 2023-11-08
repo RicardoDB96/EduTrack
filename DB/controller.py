@@ -94,6 +94,13 @@ class db_controller:
     conn.close()
     return datos
   
+  def deleteTaskByID(id):
+    conn = sql.connect('edutrack.db')
+    cursor = conn.cursor()
+    cursor.execute(f"DELETE FROM Task WHERE id={id}")
+    conn.commit()
+    conn.close()
+  
 # Creación de la tabla de Materias
 def createSubjectTable():
   conn = sql.connect("edutrack.db")

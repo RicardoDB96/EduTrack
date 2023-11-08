@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from DB import controller as db
 
 class TareasInfo:
@@ -6,6 +7,7 @@ class TareasInfo:
   def __init__(self, root, tareas_ui, id):
     self.root = root
     self.tareas_ui = tareas_ui
+    self.task_id = id
     self.top = tk.Toplevel(self.root)
     self.top.grab_set()
 
@@ -15,7 +17,7 @@ class TareasInfo:
     self.top.resizable(0, 0)
 
     # Recuperamos la información de la tarea según el id que tenemos
-    tarea = db.db_controller.getTaskByID(id)
+    tarea = db.db_controller.getTaskByID(self.task_id)
 
     # Nombre de la tarea
     tk.Label(self.top, text=tarea[0], font=("FontAwesome", 16, "bold")).pack(side="top", anchor="w", padx=8)
@@ -53,7 +55,15 @@ class TareasInfo:
     self.update_button.pack(fill="x", padx=8, pady=8, side="bottom")
 
     # Creación del botón para eliminar la tarea
-    self.delete_button = tk.Button(self.top, text="Eliminar", #command=self.eliminar_tarea, 
+    self.delete_button = tk.Button(self.top, text="Eliminar", command=lambda: self.eliminar_tarea(self.task_id), 
                                    bg="red", activebackground="#8B0000", 
                                activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
     self.delete_button.pack(fill="x", padx=8, pady=8, side="bottom")
+
+  def eliminar_tarea(self, task_id):
+    confirmacion = messagebox.askyesno("Confirmar eliminación", "¿Estás seguro de que quieres eliminar esta tarea?\nPerderas toda la información relacionada con la tarea")
+    if confirmacion:
+      db.db_controller.deleteTaskByID(task_id)
+      self.top.destroy()
+      self.tareas_ui.update_tareas_list()
+      self.tareas_ui.update_scrollbar()
