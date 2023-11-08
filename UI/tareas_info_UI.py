@@ -80,9 +80,6 @@ class TareasInfo:
   def editar_tarea(self, tarea):
     AddTareaDialog(self.top, self.tareas_ui, tarea, self.top)
 
-  def destroy_info(self):
-    self.top.destroy()
-
   # Función para eliminar una tarea
   def eliminar_tarea(self, task_id):
     confirmacion = messagebox.askyesno("Confirmar eliminación", "¿Estás seguro de que quieres eliminar esta tarea?\nPerderas toda la información relacionada con la tarea")

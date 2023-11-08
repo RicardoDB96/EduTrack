@@ -1,5 +1,6 @@
 import tkinter as tk
 from .add_materia import AddMateriaDialog
+from .materia_info_UI import MateriasInfo
 from DB import controller as db
 
 class MateriasUI:
@@ -47,7 +48,7 @@ class MateriasUI:
       self.canvas.create_text(40, y_position + 15, anchor='w', text=subject, font=('FontAwesome', 15))  # Agregar texto con el nombre de la materia al lado del círculo
 
       # Eventos relacionados al comportamiento del rectangulo, como lo puede ser el pasar por encima o hacer click en el
-      self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event, i=i: self.on_item_click(event, i))
+      self.canvas.tag_bind(f"rectangle{i}", '<ButtonPress-1>', lambda event, id=id: self.on_item_click(id))
       self.canvas.tag_bind(rectangle, "<Enter>", lambda event, rect=rectangle: self.on_enter(rect))
       self.canvas.tag_bind(rectangle, "<Leave>", lambda event, rect=rectangle: self.on_leave(rect))
       y_position += 30
@@ -79,8 +80,8 @@ class MateriasUI:
     self.draw_rectangles()
 
   # Funcion para detectar que materia seleccionaste
-  def on_item_click(self, event, i):
-    print(f"Seleccionaste: {self.data[i][0]}")
+  def on_item_click(self, id):
+    MateriasInfo(self.root, self, id)
 
   def on_enter(self, rect):
     # Cambiar estilo al pasar el ratón por encima
