@@ -6,7 +6,7 @@ import sqlite3 as sql
 
 class AddTareaDialog:
 
-  def __init__(self, root, tareas_ui):
+  def __init__(self, root, tareas_ui, tarea_info, destroy_info_UI):
     self.root = root
     self.tareas_ui = tareas_ui
     self.top = tk.Toplevel(self.root)
@@ -19,7 +19,7 @@ class AddTareaDialog:
 
     n_font = ("FontAwesome", 12)
 
-    # Nombre del sistema
+    # Nombre de la ventana
     tk.Label(self.top, text="Agregar tarea", font=("FontAwesome", 16, "bold")).pack(side="top", fill="x", padx=8, pady=12)
 
     # Configuración de la fila con los elementos de la tarea
@@ -74,7 +74,54 @@ class AddTareaDialog:
                                activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
     self.add_button.pack(fill="x", padx=16, pady=8)
 
-  # Función para añadir la materia en la base de datos y actulizarla
+    # Si tenemos información de una tarea, procedemos a reflejar dicha información en la UI
+    if tarea_info != None:
+      nombre_tarea = tarea_info[0]
+      materia_tarea = tarea_info[1]
+      fecha_tarea = tarea_info[3]
+      tipo_tarea = tarea_info[4]
+      
+      # ID de la tarea
+      self.task_id = tarea_info[7]
+
+      # Separa el año, mes y día
+      year, month, day = fecha_tarea.split("-")
+
+      # Reorganiza los componentes de fecha en el formato deseado
+      correct_date = f"{month}-{day}-{year}"
+
+      self.tarea_entry.insert(0, nombre_tarea)
+      self.subject.set(materia_tarea)
+      self.cal.set_date(correct_date)
+      self.m_type.set(tipo_tarea)
+
+      self.add_button.config(text="Guardar", command=lambda: self.edit_tarea(destroy_info_UI))
+
+  # Función para editar la tarea y guardar la nueva información en la DB
+  def edit_tarea(self, destroy):
+    # Obtenemos todos los valores a ingresar a la DB
+    tarea = self.tarea_entry.get()
+    date = self.cal.get_date().strftime("%Y-%m-%d")
+    mtype = self.m_type.get()
+
+    # Checamos errores
+    case = self.check_errors(tarea, self.subject.get(), date, mtype)
+
+    subject = self.subject.get().replace("(", "").replace(",)", "").replace("'", "")
+
+        # Si no tenemos errores, procedemos a ingresar los datos a la base de datos
+    if case:
+      try:
+        materia = db.db_controller.getSubjectID(subject)[0] # Buscamos el id de la materia
+        db.db_controller.updateTask(tarea, materia, date, mtype,self.task_id)
+        self.top.destroy()
+        destroy.destroy()
+        self.tareas_ui.update_tareas_list()
+        self.tareas_ui.update_scrollbar()
+      except sql.OperationalError as e:
+        messagebox.showerror('Error al actualizar', e)
+
+  # Función para añadir la tarea en la base de datos y actulizarla
   def add_tarea(self):
     # Obtenemos todos los valores a ingresar a la DB
     tarea = self.tarea_entry.get()
@@ -87,7 +134,6 @@ class AddTareaDialog:
     subject = self.subject.get().replace("(", "").replace(",)", "").replace("'", "")
 
     # Si no tenemos errores, procedemos a ingresar los datos a la base de datos
-    db.db_controller.getSubjectID(subject)
     if case:
       try:
         materia = db.db_controller.getSubjectID(subject)[0] # Buscamos el id de la materia
@@ -104,4 +150,4 @@ class AddTareaDialog:
       messagebox.showerror('Error al añadir', 'Ingrese los datos para la tarea')
       return False  # Algun campo esta vacio
     else:
-      return True  # No hay errores
+      return True  # No hay
