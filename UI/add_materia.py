@@ -6,7 +6,7 @@ import sqlite3 as sql
 
 class AddMateriaDialog:
 
-    def __init__(self, root, materias_ui):
+    def __init__(self, root, materias_ui, materia_info, destroy_info):
         self.root = root
         self.materias_ui = materias_ui
         self.top = tk.Toplevel(self.root)
@@ -43,12 +43,44 @@ class AddMateriaDialog:
                                    activeforeground="white", fg="white", font=('FontAwesome', 12, "bold"))
         self.add_button.pack(fill="x", padx=16, pady=8)
 
-    # Funciión para elegir el color de la materia
+        # Si tenemos información de una materia, procedemos a reflejar dicha información en la UI
+        if materia_info != None:
+            nombre_materia = materia_info[1]
+            color_materia = materia_info[2]
+
+            # ID de la materia
+            self.subject_id = materia_info[0]
+
+            self.nombre_entry.insert(0, nombre_materia)
+            self.color_button.config(bg=color_materia)
+
+            self.add_button.config(text="Guardar", command=lambda: self.edit_materia(destroy_info))
+
+    # Función para elegir el color de la materia
     def choose_color(self):
         color_code = colorchooser.askcolor(title="Elegir color")[1]
         self.color_button.configure(bg=color_code)
         self.color_button.configure(fg=get_font_color(color_code))# Actualizamos el color de la letra dependiendo el color del background
         self.top.deiconify()
+
+     # Función para añadir la materia en la base de datos y actulizarla
+    def edit_materia(self, destroy):
+        nombre = self.nombre_entry.get()
+        color = self.color_button.cget("bg")
+
+        # Checamos errores
+        case = self.check_errors(color, self.top.cget('bg'))
+
+        # Si no tenemos errores, procedemos a ingresar los datos a la base de datos
+        if case:
+            try:
+                db.db_controller.updateSubject(self.subject_id, nombre, color)
+                self.top.destroy()
+                destroy.destroy()
+                self.materias_ui.update_materias_list()
+                self.materias_ui.update_scrollbar()
+            except sql.IntegrityError as e:
+                messagebox.showerror('Error al añadir', 'No se puede añadir una materia con el mismo nombre')
 
     # Función para añadir la materia en la base de datos y actulizarla
     def add_materia(self):

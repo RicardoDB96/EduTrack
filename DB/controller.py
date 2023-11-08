@@ -38,9 +38,8 @@ class db_controller:
     conn.commit()
     conn.close()
 
-  # Ingresar una tarea a la base de datos
+  # Actualizar una tarea a la base de datos
   def updateTask(tarea, materia_id, fecha, type, task_id):
-    createTaskTable()
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
     instruccion = """UPDATE task 
@@ -53,7 +52,19 @@ class db_controller:
     conn.commit() 
     conn.close()
 
-  # Obtener los todos los datos de la tarea, según su ID, de la base de datos con los datos de la materia
+  # Actualizar una materia a la base de datos
+  def updateSubject(id, materia, color):
+    conn = sql.connect("edutrack.db")
+    cursor = conn.cursor()
+    instruccion = """UPDATE subject 
+                    SET materia = ?, 
+                        color = ?
+                    WHERE id = ?"""
+    cursor.execute(instruccion, (materia, color, id))
+    conn.commit() 
+    conn.close()
+
+  # Obtener los todos los datos de la tarea, según su ID, de la base de datos con los datos de la materia a la que pertenece
   def getTaskByID(id):
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
@@ -69,6 +80,21 @@ class db_controller:
     conn.commit()
     conn.close()
     return tarea
+  
+  # Obtener los todos los datos de la materia, según su ID
+  def getSubjectByID(id):
+    conn = sql.connect("edutrack.db")
+    cursor = conn.cursor()
+    instruccion = f"""
+      SELECT id, materia, color
+      FROM subject
+      WHERE id = {id}
+    """
+    cursor.execute(instruccion)
+    materia = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    return materia
   
   # Obtener los todos los datos de materias de la base de datos
   def getAllSubject():
@@ -109,6 +135,7 @@ class db_controller:
     conn.close()
     return datos
   
+  # Función para cambiar el estado de completo de una tarea
   def completeTask(complete, completed, task_id):
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
@@ -120,10 +147,36 @@ class db_controller:
     conn.commit()
     conn.close()
   
+  # Función para contar el numero de tareas que pertenecen a una materia
+  def getTaskCountFromSubjectByID(subject_id):
+    conn = sql.connect('edutrack.db')  # Reemplaza 'example.db' con el nombre de tu base de datos
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM Task WHERE subject_id=?", (subject_id,))
+    task_count = cursor.fetchone()[0]
+    conn.close()
+    return task_count
+  
+  # Función para contar el numero de tareas completadas que pertenecen a una materia
+  def getCompleteTaskCountFromSubjectByID(subject_id):
+    conn = sql.connect('edutrack.db')  # Reemplaza 'example.db' con el nombre de tu base de datos
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM Task WHERE subject_id=? AND complete=1", (subject_id,))
+    complete_task_count = cursor.fetchone()[0]
+    conn.close()
+    return complete_task_count
+  
   def deleteTaskByID(id):
     conn = sql.connect('edutrack.db')
     cursor = conn.cursor()
     cursor.execute(f"DELETE FROM Task WHERE id={id}")
+    conn.commit()
+    conn.close()
+
+  def deleteSubjectByID(subject_id):
+    conn = sql.connect('edutrack.db')  # Reemplaza 'example.db' con el nombre de tu base de datos
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM Task WHERE subject_id=?", (subject_id,))
+    cursor.execute("DELETE FROM Subject WHERE id=?", (subject_id,))
     conn.commit()
     conn.close()
   
