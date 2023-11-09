@@ -41,7 +41,6 @@ class TareasUI:
           return db.db_controller.getAllNotCompleteTaskWithSubjectColor() # Recuperamos solo las tareas no 
 
   def toggle_completed_tasks(self):
-      print(self.estado.get())
       if self.estado.get(): # Recuperamos todas las tareas
           self.update_tareas_list()
           self.update_scrollbar()

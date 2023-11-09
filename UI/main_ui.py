@@ -37,6 +37,7 @@ class MainUI:
     
     for text, icon, button,comando in buttons_info:
       self.configurar_boton_menu(button, text, icon, font_awesome, ancho_menu, alto_menu,comando)
+    self.abrir_tareas()
 
   def configurar_boton_menu(self, button, text, icon, font_awesome, ancho_menu, alto_menu, comando):
     button.config(text=f"  {icon}    {text}", anchor="w", font=font_awesome,

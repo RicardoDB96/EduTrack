@@ -5,6 +5,7 @@ from .main_ui import MainUI
 class GUIManager:
   def __init__(self):
     self.root = tk.Tk()
+    self.root.iconbitmap('EduTrack.ico')
     #self.login_ui = LoginUI(self.root)
     self.main_ui = MainUI(self.root)
 
