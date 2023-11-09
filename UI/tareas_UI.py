@@ -79,7 +79,7 @@ class TareasUI:
   # Función para actualizar el comportamiento de la scrollbar en base a cuantos elementos tiene la base de datos
   def update_scrollbar(self):
     item_count = len(self.data)
-    if item_count > 10:# Si tiene mas de 10 elementos, mostramos la scrollbar con sus respectivos comportamientos
+    if item_count > 9:# Si tiene mas de 9 elementos, mostramos la scrollbar con sus respectivos comportamientos
         self.scrollbar_visible = True
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.canvas.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
