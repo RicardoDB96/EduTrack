@@ -75,6 +75,8 @@ class TareasInfo:
       today = None
     db.db_controller.completeTask(not status, today, task_id)
     self.top.destroy()
+    self.tareas_ui.update_tareas_list()
+    self.tareas_ui.update_scrollbar()
 
   # Función para editar los datos de una tarea
   def editar_tarea(self, tarea):

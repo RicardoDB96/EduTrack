@@ -9,6 +9,10 @@ class TareasUI:
     self.root = root
     tk.Label(root, text="Tareas", font=('FontAwesome', 18, "bold")).pack(side="top")
 
+    self.estado = tk.BooleanVar()
+    check_button = tk.Checkbutton(root, text="Mostrar tareas completedas", variable=self.estado, command=lambda: self.toggle_completed_tasks(), font=('FontAwesome', 14))
+    check_button.pack(anchor="e", padx=16)
+
     # Abrir la ventana para crear tareas
     def add_task():
       AddTareaDialog(root, self, None, None)
@@ -26,13 +30,24 @@ class TareasUI:
     self.scrollbar = tk.Scrollbar(self.root, orient=tk.VERTICAL, command=self.canvas.yview)
     self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-    # Recuperamos los datos de tareas
-    self.data = db.db_controller.getAllTaskWithSubjectColor()
-
-    # Configuración del scroll de la lista
+    # Configuración de la lista
+    self.update_tareas_list()
     self.update_scrollbar()
 
-    self.draw_rectangles()
+  def toggle_tasks(self):
+      if self.estado.get():
+          return db.db_controller.getAllTaskWithSubjectColor() # Recuperamos todas las tareas
+      else:
+          return db.db_controller.getAllNotCompleteTaskWithSubjectColor() # Recuperamos solo las tareas no 
+
+  def toggle_completed_tasks(self):
+      print(self.estado.get())
+      if self.estado.get(): # Recuperamos todas las tareas
+          self.update_tareas_list()
+          self.update_scrollbar()
+      else: # Recuperamos solo las tareas no
+          self.update_tareas_list()
+          self.update_scrollbar()
 
     # Función para crear los espacios para cada tarea
   def draw_rectangles(self):
@@ -40,13 +55,16 @@ class TareasUI:
       y_position = 0
       x_start = 0
       x_end = 825
-      for i, (id, task, subject, color, date, type) in enumerate(self.data):
+      for i, (id, task, subject, color, date, type, complete) in enumerate(self.data):
         rectangle = self.canvas.create_rectangle(x_start, y_position, x_end, y_position + 55, outline="",
                                                    tags=f"rectangle{i}")
         self.rectangles.append(rectangle)
         self.canvas.create_line(x_start, y_position + 55, x_end, y_position + 55,
                                 fill="light grey")  # Agregar un divisor al final del rectángulo
-        self.canvas.create_text(10, y_position + 15, anchor='w', text=task, font=('FontAwesome', 15))
+        if complete:
+           self.canvas.create_text(10, y_position + 15, anchor='w', text=task, font=('FontAwesome', 15,"overstrike"))
+        else:
+           self.canvas.create_text(10, y_position + 15, anchor='w', text=task, font=('FontAwesome', 15))
         self.canvas.create_oval(10, y_position + 30, 30, y_position + 50, fill=color, outline="")  # Dibujar círculo de color dentro del rectángulo
         self.canvas.create_text(40, y_position + 40, anchor='w', text=subject, font=('FontAwesome', 15))
         self.canvas.create_text(x_end - 110, y_position + 15, anchor='w', text=date, font=('FontAwesome', 15))
@@ -81,7 +99,7 @@ class TareasUI:
   # Función para actualizar la lista de tareas
   def update_tareas_list(self):
     # Actualizar la lista de tareas
-    self.data = db.db_controller.getAllTaskWithSubjectColor()
+    self.data = self.toggle_tasks()
     self.canvas.delete("all")  # Limpiar el Canvas
     self.draw_rectangles()
 

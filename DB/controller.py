@@ -112,10 +112,28 @@ class db_controller:
     conn = sql.connect("edutrack.db")
     cursor = conn.cursor()
     instruccion = f"""
-      SELECT task.id, task.tarea, subject.materia, subject.color, task.fecha, task.type 
+      SELECT task.id, task.tarea, subject.materia, subject.color, task.fecha, task.type, task.complete 
       FROM task 
       JOIN subject 
       ON task.subject_id = subject.id
+      ORDER BY task.fecha
+    """
+    cursor.execute(instruccion)
+    datos = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    return datos
+  
+  # Obtener los todos los datos de tareas de la base de datos con los datos de la materia
+  def getAllNotCompleteTaskWithSubjectColor():
+    conn = sql.connect("edutrack.db")
+    cursor = conn.cursor()
+    instruccion = f"""
+      SELECT task.id, task.tarea, subject.materia, subject.color, task.fecha, task.type, task.complete 
+      FROM task 
+      JOIN subject 
+      ON task.subject_id = subject.id
+      WHERE complete = 0
       ORDER BY task.fecha
     """
     cursor.execute(instruccion)
